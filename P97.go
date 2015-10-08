@@ -55,9 +55,29 @@ func getRow(n int) []int {
 func getSquare(n int) []int {
 	square := []int{}
 
+	fistRow := (n / 3) * 3
+	fistColumn := (n % 3) * 3
+
+	for i := 0; i < 3; i++ {
+		square = append(square,
+			puzzle[fistRow+i][fistColumn:fistColumn+3]...)
+	}
+
 	return square
 }
 
+func checkRow(n int) bool {
+
+}
+
+func checkColumn(n int) bool {
+
+}
+
+func checkSquare(n int) bool {
+
+}
+
 func main() {
-	p(getRow(3))
+	p(getSquare(0))
 }

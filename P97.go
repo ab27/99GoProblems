@@ -23,6 +23,41 @@
 
 package main
 
-func main() {
+import "fmt"
 
+var p = fmt.Println
+
+var puzzle = [][]int{
+	[]int{-1, -1, 4, 8, -1, -1, -1, 1, 7},
+	[]int{6, 7, -1, 9, -1, -1, -1, -1, -1},
+	[]int{5, -1, 8, -1, 3, -1, -1, -1, 4},
+	[]int{3, -1, -1, 7, 4, -1, 1, -1, -1},
+	[]int{-1, 6, 9, -1, -1, -1, 7, 8, -1},
+	[]int{-1, -1, 1, -1, 6, 9, -1, -1, 5},
+	[]int{1, -1, -1, -1, 8, -1, 3, -1, 6},
+	[]int{-1, -1, -1, -1, -1, 6, -1, 9, 1},
+	[]int{2, 4, -1, -1, -1, 1, 5, -1, -1}}
+
+func getColumn(n int) []int {
+	column := []int{}
+
+	for _, v := range puzzle {
+		column = append(column, v[n])
+	}
+
+	return column
+}
+
+func getRow(n int) []int {
+	return puzzle[n]
+}
+
+func getSquare(n int) []int {
+	square := []int{}
+
+	return square
+}
+
+func main() {
+	p(getRow(3))
 }

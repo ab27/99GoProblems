@@ -66,8 +66,15 @@ func getSquare(n int) []int {
 	return square
 }
 
-func checkRow(n int) bool {
+func checkRow(r, n int) bool {
+	row := getRow(r)
 
+	for _, v := range row {
+		if v == n {
+			return true
+		}
+	}
+	return false
 }
 
 func checkColumn(n int) bool {

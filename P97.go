@@ -38,6 +38,15 @@ var puzzle = [][]int{
 	[]int{-1, -1, -1, -1, -1, 6, -1, 9, 1},
 	[]int{2, 4, -1, -1, -1, 1, 5, -1, -1}}
 
+func contains(arr []int, n int) bool {
+	for _, v := range arr {
+		if v == n {
+			return true
+		}
+	}
+	return false
+}
+
 func getColumn(n int) []int {
 	column := []int{}
 
@@ -68,23 +77,127 @@ func getSquare(n int) []int {
 
 func checkRow(r, n int) bool {
 	row := getRow(r)
+	return contains(row, n)
+}
 
-	for _, v := range row {
-		if v == n {
-			return true
+func checkColumn(c, n int) bool {
+	col := getColumn(c)
+	return contains(col, n)
+}
+
+func checkSquare(s, n int) bool {
+	sq := getSquare(s)
+	return contains(sq, n)
+}
+
+func findSq(row, col int) int {
+	return (row/3)*3 + (col / 3)
+}
+
+func availables(r, c int) []int {
+	av := []int{}
+	sq := findSq(r, c)
+	for i := 1; i <= 9; i++ {
+		if !checkColumn(c, i) && !checkRow(r, i) && !checkSquare(sq, i) {
+			av = append(av, i)
 		}
 	}
-	return false
+	return av
 }
 
-func checkColumn(n int) bool {
-
+func next(r, c int) (int, int) {
+	c += 1
+	for i := r; i < 9; i++ {
+		for j := c; j < 9; j++ {
+			if puzzle[i][j] == -1 {
+				return i, j
+			}
+		}
+		c = 0
+	}
+	return -1, -1
 }
 
-func checkSquare(n int) bool {
+type cell struct {
+	row    int
+	column int
+}
+
+func printBoard(board [][]int) {
+	for i := 0; i < len(board); i++ {
+		for j := 0; j < len(board[i]); j++ {
+			if board[i][j] == -1 {
+				fmt.Print("x", "  ")
+				continue
+			}
+			fmt.Print(board[i][j], "  ")
+		}
+		p()
+	}
+}
+
+func solve(board [][]int) {
+	r, c := -1, -1
+	if puzzle[0][0] == -1 {
+		r, c = 0, 0
+	} else {
+		r, c = next(0, 0)
+	}
+
+	prev := []cell{}
+
+	avMap := make(map[cell][]int)
+
+	for {
+
+		av := []int{}
+		// availables for the current cell
+		if a, ok := avMap[cell{r, c}]; ok {
+			av = a
+		} else {
+			av = availables(r, c)
+		}
+
+		if len(av) == 0 {
+			if len(prev) == 0 {
+				p("game over")
+				break
+			}
+			delete(avMap, cell{r, c})
+			board[r][c] = -1
+			// backtrack
+			r, c = prev[len(prev)-1].row, prev[len(prev)-1].column
+			prev = prev[:len(prev)-1]
+			continue
+		}
+
+		prev = append(prev, cell{r, c})
+
+		if len(av) > 1 {
+			board[r][c] = av[0]
+			avMap[cell{r, c}] = av[1:]
+			r, c = next(r, c)
+		}
+
+		if len(av) == 1 {
+			board[r][c] = av[0]
+			avMap[cell{r, c}] = []int{}
+			r, c = next(r, c)
+		}
+
+		if r == -1 && c == -1 {
+			printBoard(board)
+			// p("done")
+			break
+		}
+
+	}
 
 }
 
 func main() {
-	p(getSquare(0))
+	board := make([][]int, len(puzzle))
+	copy(board, puzzle)
+	solve(board)
+
 }
